@@ -15,9 +15,61 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 const run= async()=>{
     try{
         await client.connect();
-        const homeProductCollection = client.db("Products").collection("homepage");
         const allproductCollection = client.db("Products").collection("allProducts")
-        const cartCollection = client.db("Products").collection("cartProducts")
+        const reviewsCollection = client.db("Products").collection("reviews")
+        const displayCollection = client.db("Products").collection("displayProducts")
+        const orderCollection = client.db("Products").collection("orderProduct")
+
+        app.get('/displayproducts', async (req, res) => {
+            const quary = {}
+            const result = await displayCollection.find(quary).toArray()
+            res.send(result)
+        })
+        app.get('/displayproducts/:id', async (req, res) => {
+            const id= req.params.id
+            const quary = {_id:ObjectId(id)}
+            const result = await displayCollection.findOne(quary)
+            res.send(result)
+        })
+         app.get('/reviews', async (req, res) => {
+            const quary = {}
+            const result = await reviewsCollection.find(quary).toArray()
+            res.send(result)
+         })
+        
+        app.post('/order', async (req, res) => {
+            const order = req.body;
+            const quary = { name: order.name,email:order.email}
+
+            const exisit = await orderCollection.findOne(quary)
+            
+            if (exisit) {
+                console.log(quary) 
+              return    res.send({success:false})
+            }
+
+            const result = await orderCollection.insertOne(order)
+            res.send(result)
+        })
+
+         app.put('/displayproducts/:id', async (req, res) => {
+             const id = req.params.id
+             const udpate = req.body
+             const filter = { _id: ObjectId(id) }
+             const option = { upsert: true }
+             const updateDoc = {
+                 $set:udpate
+             }
+             const result = await displayCollection.updateOne(filter, updateDoc, option)
+             res.send(result)
+        })
+
+
+
+
+
+
+
 
 
 
