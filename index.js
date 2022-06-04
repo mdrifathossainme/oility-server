@@ -19,6 +19,12 @@ const run= async()=>{
         const reviewsCollection = client.db("Products").collection("reviews")
         const displayCollection = client.db("Products").collection("displayProducts")
         const orderCollection = client.db("Products").collection("orderProduct")
+        const whiteListCollection = client.db("Products").collection("whiteList")
+
+
+
+
+
 
         app.get('/displayproducts', async (req, res) => {
             const quary = {}
@@ -37,6 +43,17 @@ const run= async()=>{
             res.send(result)
          })
         
+        app.get('/whishlistlove', async (req, res) => {
+            const email = req.query.email
+            const quary = { email:email }
+            const result = await whiteListCollection.find(quary).toArray()
+            res.send(result)
+            console.log()
+         })
+        
+        
+        
+        
         app.post('/order', async (req, res) => {
             const order = req.body;
             const quary = { name: order.name,email:order.email}
@@ -44,13 +61,32 @@ const run= async()=>{
             const exisit = await orderCollection.findOne(quary)
             
             if (exisit) {
-                console.log(quary) 
+               
               return    res.send({success:false})
             }
 
             const result = await orderCollection.insertOne(order)
             res.send(result)
         })
+
+        app.post('/whitelist', async (req, res) => {
+            const order = req.body;
+            const quary = { name: order.name,email:order.email}
+
+            const exisit = await whiteListCollection.findOne(quary)
+            
+            if (exisit) {
+            
+              return    res.send({success:false})
+            }
+            const result = await whiteListCollection.insertOne(order)
+            res.send(result)
+        })
+
+
+
+
+
 
          app.put('/displayproducts/:id', async (req, res) => {
              const id = req.params.id
