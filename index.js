@@ -50,6 +50,12 @@ const run= async()=>{
             res.send(result)
             console.log()
          })
+        app.get('/allproducts', async (req, res) => {
+            const quary = { }
+            const result = await allproductCollection.find(quary).limit(12).toArray()
+            res.send(result)
+            console.log()
+         })
         
         
         
@@ -100,6 +106,13 @@ const run= async()=>{
              res.send(result)
         })
 
+        app.delete('/wishitemdelet/:id', async (req, res) => {
+            const id = req.params.id
+            const quary = { _id: ObjectId(id) }
+            const reseult = await whiteListCollection.deleteOne(quary)
+            res.send(reseult)
+
+        })
 
 
 
