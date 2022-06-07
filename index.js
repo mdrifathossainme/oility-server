@@ -47,18 +47,10 @@ const run= async()=>{
             console.log()
          })
         app.get('/allproducts', async (req, res) => {
-            let skipPage = parseInt(req.query.page)
-       
-            let page
-            if (skipPage) {
-                page=skipPage
-            }
-            
-            
-            
-
+            let page = parseInt(req.query.page)
+            let limit = parseInt(req.query.limit)
+                
             let category = req.query.category;
-
 
             let quary
             if (category) {
@@ -67,19 +59,26 @@ const run= async()=>{
             
             let result
             if (page) {
-                    result = await allproductCollection.find(quary).skip(page*12).limit(12).toArray()    
+                    result = await allproductCollection.find(quary).skip(page*limit).limit(limit).toArray()    
             }
             else {
-                    result = await allproductCollection.find(quary).limit(12).toArray() 
+                 result = await allproductCollection.find(quary).limit(limit).toArray()
             }
              res.send(result) 
             
             
            
         })
+
         app.get('/productscount', async (req, res) => {
             const count =await allproductCollection.estimatedDocumentCount()
             res.send({count})
+        })
+        
+        app.get('/allproductle', async (req, res) => {
+            const quary = {}
+            const result = await allproductCollection.find(quary).toArray()
+            res.send(result)
         })
         
         
