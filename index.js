@@ -22,10 +22,6 @@ const run= async()=>{
         const whiteListCollection = client.db("Products").collection("whiteList")
 
 
-
-
-
-
         app.get('/displayproducts', async (req, res) => {
             const quary = {}
             const result = await displayCollection.find(quary).toArray()
@@ -51,12 +47,40 @@ const run= async()=>{
             console.log()
          })
         app.get('/allproducts', async (req, res) => {
-            const quary = { }
-            const result = await allproductCollection.find(quary).limit(12).toArray()
-            res.send(result)
-            console.log()
-         })
-        
+            let skipPage = parseInt(req.query.page)
+       
+            let page
+            if (skipPage) {
+                page=skipPage
+            }
+            
+            
+            
+
+            let category = req.query.category;
+
+
+            let quary
+            if (category) {
+                quary={category}
+            }
+            
+            let result
+            if (page) {
+                    result = await allproductCollection.find(quary).skip(page*12).limit(12).toArray()    
+            }
+            else {
+                    result = await allproductCollection.find(quary).limit(12).toArray() 
+            }
+             res.send(result) 
+            
+            
+           
+        })
+        app.get('/productscount', async (req, res) => {
+            const count =await allproductCollection.estimatedDocumentCount()
+            res.send({count})
+        })
         
         
         
