@@ -41,6 +41,7 @@ const run= async()=>{
         
         app.get('/whishlistlove', async (req, res) => {
             const email = req.query.email
+            console.log(email)
             const quary = { email:email }
             const result = await whiteListCollection.find(quary).toArray()
             res.send(result)
@@ -75,9 +76,10 @@ const run= async()=>{
             res.send({count})
         })
         
-        app.get('/allproductle', async (req, res) => {
-            const quary = {}
-            const result = await allproductCollection.find(quary).toArray()
+        app.get('/product/:id', async (req, res) => {
+            const id= req.params.id
+            const quary = {_id:ObjectId(id)}
+            const result = await allproductCollection.findOne(quary)
             res.send(result)
         })
         
