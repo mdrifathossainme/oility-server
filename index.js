@@ -71,11 +71,19 @@ const run= async()=>{
            
         })
 
-        app.get('/productscount', async (req, res) => {
-            const count =await allproductCollection.estimatedDocumentCount()
-            res.send({count})
+        app.get('/order', async (req, res) => {
+            const quary=req.query.email
+            const result = await orderCollection.find(quary).toArray()
+            res.send(result)
+            
         })
         
+        app.get('/product/:id', async (req, res) => {
+            const id= req.params.id
+            const quary = {_id:ObjectId(id)}
+            const result = await allproductCollection.findOne(quary)
+            res.send(result)
+        })
         app.get('/product/:id', async (req, res) => {
             const id= req.params.id
             const quary = {_id:ObjectId(id)}
